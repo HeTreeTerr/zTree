@@ -11,6 +11,14 @@
     <style type="text/css">
         ul.ztree {
             background:#ffffff;
+            width: 230px;
+            height: 395px;
+        }
+        .nodeInfo{
+            width: 100px;
+            height: 100px;
+            background-color: #7EC4CC;
+            margin-left: 17px;
         }
     </style>
 </head>
@@ -25,6 +33,7 @@
         <ul class="info">
             <p>&nbsp;&nbsp;&nbsp;&nbsp;[ <a id="addParent" href="javascript:;" title="新增一级菜单" onclick="return false;">新增一级菜单</a> ]<br/>
                 &nbsp;&nbsp;&nbsp;&nbsp;[ <a id="edit" href="javascript:;" title="修改菜单名" onclick="return false;">修改菜单名</a> ]</p>
+            <p id="nodeInfo" class="nodeInfo"></p>
         </ul>
     </div>
 </div>
@@ -222,6 +231,7 @@
     //点击节点的触发事件
     function showDataList(treeNode){
         console.log("节点编号："+treeNode.id);
+        $("#nodeInfo").html(treeNode.id+"-->"+treeNode.name);
     }
 
     $(function () {
