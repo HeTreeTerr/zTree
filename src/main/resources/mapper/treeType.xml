@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hss.mapper.TreeTypeMapper">
+    <resultMap id="treeTypeResultMap" type="TreeType">
+
+        <id column="id" property="id" />
+        <result column="pid" property="pId" />
+        <result column="name" property="name" />
+        <result column="open" property="open" />
+
+    </resultMap>
+
+    <sql id="columns">
+		id,pid,name,open
+	</sql>
+
+    <select id="findTreeType" resultMap="treeTypeResultMap">
+        select  <include refid="columns" />
+        from tree_type ORDER BY id asc
+    </select>
+
+    <select id="findTreeTypeById" resultMap="treeTypeResultMap">
+        select <include refid="columns" />
+        from tree_type where id=#{id}
+    </select>
+
+    <update id="updateTreeType" parameterType="TreeType">
+        UPDATE tree_type set name=#{name} where id=#{id}
+    </update>
+
+    <insert id="addTreeType" parameterType="TreeType" useGeneratedKeys="true" keyProperty="id">
+        insert into tree_type(pid,name) values(#{pId},#{name})
+    </insert>
+
+    <delete id="deleteTreeType" parameterType="java.lang.Long">
+        delete from tree_type where id=#{id}
+    </delete>
+
+    <select id="findTreeTypeByPid" resultMap="treeTypeResultMap">
+        select <include refid="columns" />
+        from tree_type where pid=#{pId}
+    </select>
+</mapper>

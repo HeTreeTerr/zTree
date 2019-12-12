@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd
+	">
+    <!-- spring的配置文件，主要配置业务逻辑 -->
+    <!-- c3p0连接池 -->
+    <context:property-placeholder location="classpath:dbconfig.properties" />
+
+    <bean id="pooledDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="jdbcUrl" value="${jdbc.url}"></property>
+        <property name="driverClass" value="${jdbc.driverClassName}"></property>
+        <property name="user"  value="${jdbc.username}"></property>
+        <property name="password"  value="${jdbc.password}"></property>
+    </bean>
+
+    <!-- 注解注入bean -->
+    <context:component-scan base-package="com.hss">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+    <!-- 整合mybatis -->
+    <!-- 配置mybatis的SQLSessionFactory -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation" value="classpath:mybatis-config.xml"></property>
+        <property name="dataSource" ref="pooledDataSource"/>
+        <!-- 扫描所有的dao接口 -->
+        <property name="mapperLocations" value="classpath:mapper/*.xml">
+
+        </property>
+    </bean>
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.hss.mapper"></property>
+    </bean>
+    <!-- 配置一个可执行批量的sqlSession -->
+    <bean id="sqlsession" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"></constructor-arg>
+        <!--<constructor-arg name="executorType" value="BATCH"></constructor-arg>-->
+        <!-- 执行类型 -->
+        <constructor-arg name="executorType" value="SIMPLE"></constructor-arg>
+    </bean>
+    <!-- 事务控制 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="pooledDataSource"/>
+
+    </bean>
+    <!-- 使用aop切面配置事务 -->
+    <aop:config>
+        <aop:pointcut expression="execution(* com.hss..service.*Service.*(..))" id="txPoint"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="txPoint"/>
+    </aop:config>
+    <!-- 配置事务如何切入 -->
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="add*" propagation="REQUIRED" rollback-for="java.lang.Throwable" />
+            <tx:method name="insert*" propagation="REQUIRED" rollback-for="java.lang.Throwable" />
+            <tx:method name="save*" propagation="REQUIRED" rollback-for="java.lang.Throwable" />
+            <tx:method name="update*" propagation="REQUIRED" rollback-for="java.lang.Throwable" />
+            <tx:method name="modify*" propagation="REQUIRED" rollback-for="java.lang.Throwable" />
+            <tx:method name="edit*" propagation="REQUIRED" rollback-for="java.lang.Throwable" />
+            <tx:method name="delete*" propagation="REQUIRED" rollback-for="java.lang.Throwable" />
+            <tx:method name="remove*" propagation="REQUIRED" rollback-for="java.lang.Throwable" />
+            <tx:method name="move*" propagation="REQUIRED" rollback-for="java.lang.Throwable" />
+            <tx:method name="get*" propagation="SUPPORTS" />
+            <tx:method name="find*" propagation="SUPPORTS" />
+            <tx:method name="load*" propagation="SUPPORTS" />
+            <tx:method name="search*" propagation="SUPPORTS" />
+            <tx:method name="*" propagation="SUPPORTS" />
+        </tx:attributes>
+    </tx:advice>
+
+</beans>
