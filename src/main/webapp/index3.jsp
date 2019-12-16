@@ -68,7 +68,6 @@
         view : {
             dblClickExpand : true,
             selectedMulti:false,
-            addNameTitle:"添加节点",
             addHoverDom: addHoverDom,        //添加按钮
             removeHoverDom: removeHoverDom
         },
@@ -161,7 +160,7 @@
         var sObj = $("#" + treeNode.tId + "_span"); //获取删除修改span
         if (treeNode.editNameFlag || $("#addBtn_"+treeNode.tId).length>0) return;
         var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
-            + "' title='add node' onfocus='this.blur();'></span>";  //添加add  span
+            + "' title='添加节点' onfocus='this.blur();'></span>";  //添加add  span
         sObj.after(addStr);          // 把删除修改 span 放到 add 后面
         var btn = $("#addBtn_"+treeNode.tId);
         if (btn) btn.bind("click", function(){
