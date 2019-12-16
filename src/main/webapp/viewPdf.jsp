@@ -14,9 +14,9 @@
             建议使用工具将文件转为图片显示！！！
         </span>
     </div>
-    <div>
+    <%--<div>
         <iframe src="/static/pdf/htmlView.pdf" width="800" height="600"></iframe>
-    </div>
+    </div>--%>
     <div style="width:800px;">
         <img src="/static/img/121310134693_0htmlView_1.Jpeg" width="100%" height="100%">
     </div>
